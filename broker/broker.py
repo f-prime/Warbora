@@ -1,20 +1,23 @@
 import socket
 import json
+import uuid
 
-class broker:
+class Broker:
+    
     def __init__(self):
-        self.port = 5001
         self.nodes = {}
-
-    def main(self):
+        self.port = 5002
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    def main(self):
         self.sock.bind(("0.0.0.0", self.port))
         while True:
-            msg, addr = self.sock.recvfrom(1024)
-            self.nodes[msg] = addr
-            print self.nodes
-            self.sock.sendto(json.dumps(self.nodes), addr)
+            data, addr = self.sock.recvfrom(1024)
+            print data
+            self.nodes[uuid.uuid4().hex] = addr
+            data = json.dumps(self.nodes)
+            for x in range(2):
+                self.sock.sendto(data, addr)
 
-
-if __name__ == "__main__":
-    broker().main()
+Broker().main()
+        
