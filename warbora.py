@@ -19,10 +19,9 @@ class Marboo:
     def main(self):
         self.get_nodes()
         while True:
-            for x in range(2):
-                data, addr = self.sock.recvfrom(102400)
+            data, addr = self.sock.recvfrom(102400)
             data = json.loads(data)
-            print data
+            
     def prompt(self):
         while True:
             msg = raw_input(self.nick+"> ")
@@ -30,15 +29,13 @@ class Marboo:
             self.send(data)
 
     def get_nodes(self):
-        global nodes
         self.sock.sendto("", (self.bi, self.bp))
-        for x in range(2):
-            data = self.sock.recv(1024)
+        data = self.sock.recv(1024)
         nodes = json.loads(data)
         for x in nodes:
             self.connect(tuple(nodes[x]))
             self.sock.sendto(json.dumps({"cmd":"checkin"}), tuple(nodes[x]))
-
+            
     def send(self, msg):
         for x in nodes:
             self.connect(tuple(nodes[x]))
